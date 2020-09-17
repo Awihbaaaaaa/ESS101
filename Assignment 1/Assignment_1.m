@@ -25,7 +25,7 @@ T = T1+T2;
 
 % Potential energies
 V1 = m1*g*Z*p1;
-V2 = m2*g*Z*p2; %% Fuck this bitch
+V2 = m2*g*Z*p2; 
 V = V1+V2;
 
 % Lagrange function
@@ -46,6 +46,7 @@ u = [u1;u2;u3;0;0];
 
 % Euler - Lagrange model
 M_v = simplify(u + dLq -ddLdq)
+%M_v_latex = latex(M_v)
 
 %% Task 1.b
 clc
@@ -69,6 +70,10 @@ q = [p1; p2];
 dq = [dp1;dp2];
 ddq = [ddp1; ddp2];
 
+
+u = [u1;u2;u3;0;0;0];
+
+
 % Constraint
 e = p1-p2;
 C = 0.5*(e.'*e-(l.^2));
@@ -84,7 +89,7 @@ V2 = m2*g*Z.'*p2;
 V = V1+V2;
 
 % Lagrange function
-L = simplify(T-V-z*C);
+L = simplify(T-V-z*C)
 
 % Model equations
 % Derivatives of constraint
@@ -92,7 +97,7 @@ L = simplify(T-V-z*C);
 dcq = jacobian(C,q);
 
 % Derivative of C wrt q 
-dcdq = jacobian(C,q)*ddq;
+dcdq = dcq*ddq;
 
 % Derivative of C wrt dq
 ddcdq = jacobian(dcdq,q)*dq;
@@ -108,21 +113,34 @@ dcdql= dcdq + ddcdq + dcdL + ddcdl;
 
 % Derivatives of L 
 % Derivatives of L wrt dq
-dLdq = jacobian(L,dq).';
+dLdq = jacobian(L,dq);
 
 % Why r we getting zeros?
-ddLdq = jacobian(dLdq,q)*dq;
+ddLdq = jacobian(dLdq,q)'*dq;
 
 % Derivative of L wrt q
-dLq = jacobian(L,q);
+dLq = jacobian(L,q).';
 
-% Maybe ????????????????????????????????????????????????????
-Mv2 = dLq - ddLdq -dcq*z;
+% Maybe 
+Mv2 = simplify(u+dLq - ddLdq)
 
 % c(q,l)=dcdql
+%Mv2_latex = latex(Mv2)
 
-%% 2 
+%% 2.a
+clc
+w = jacobian(dLdq,dq);
 
+a = dcq';
+
+S = [w a
+    a' 0];
+
+c = [u-ddLdq+jacobian(T,q).'-jacobian(V,q).'
+    -ddcdq]
+
+%2.b
+ddqz = simplify(inv(S)*c)
 
 
 
