@@ -3,15 +3,14 @@ clc
 clear all
 syms x y z phi theta l dtheta dphi m2 m1 g u1 u2 u3 
 Z = [0 0 1];
-p1 = [x y z].';% what this is????
+p1 = [x y z].';
 
 % Masses positions
-%p1 = sym('p_',[3,1],'real');
+
 p2 = [p1(1)+l*cos(theta)*sin(phi)
     p1(2)+l*sin(theta)*sin(phi)
     p1(3)-l*cos(phi)];
 
-% dp1 = [1;1;1] what is this ????? 
 dp1 = sym('dp1_',[3,1],'real');% [dp1;dp2;dp3]
 dq = [dp1; dtheta; dphi];
 q = [p1;theta;phi];
@@ -40,13 +39,13 @@ ddLdq= jacobian(dLdq,q)*dq;
 % grad(L)_q
 dLq = jacobian(L,q).';
 
-% What the forces are ? 3x1 ot 5x1
+% The external force applid on the helicopter 5x1
 u = [u1;u2;u3;0;0];
 
 
 % Euler - Lagrange model
 M_v = simplify(u + dLq -ddLdq)
-%M_v_latex = latex(M_v)
+M_v_latex = latex(M_v)
 
 %% Task 1.b
 clc
@@ -115,13 +114,13 @@ dcdql= dcdq + ddcdq + dcdL + ddcdl;
 % Derivatives of L wrt dq
 dLdq = jacobian(L,dq);
 
-% Why r we getting zeros?
+% Secund derivative of L wrt dq
 ddLdq = jacobian(dLdq,q)'*dq;
 
 % Derivative of L wrt q
 dLq = jacobian(L,q).';
 
-% Maybe 
+% Mv2 
 Mv2 = simplify(u+dLq - ddLdq)
 
 % c(q,l)=dcdql
@@ -137,7 +136,7 @@ S = [w a
     a' 0];
 
 c = [u-ddLdq+jacobian(T,q).'-jacobian(V,q).'
-    -ddcdq]
+    -ddcdq];
 
 %2.b
 ddqz = simplify(inv(S)*c)

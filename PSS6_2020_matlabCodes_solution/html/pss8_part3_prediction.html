@@ -1,0 +1,180 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pss8_part3_prediction</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-09-18"><meta name="DC.source" content="pss8_part3_prediction.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clc;clear;
+close <span class="string">all</span>
+
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%  Prediction</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% load the data samples and identified parameters:</span>
+load <span class="string">pss8_data_part2.mat</span>
+
+<span class="comment">% Let's now use the model we found to predict the output!</span>
+<span class="comment">% Using validation data (or estimation data, just for a check)</span>
+
+N = length(y);
+NN = N/2;
+<span class="comment">% lets redifine the data variables so it will be easy to switch from</span>
+<span class="comment">% validation to estimation sets.</span>
+yn = yval;
+un = uval;
+<span class="comment">% yn = yest;</span>
+<span class="comment">% un = uest;</span>
+
+<span class="comment">% Lets do prediction first, Write your code for 1-step-ahead predictor</span>
+ypred = zeros(NN,1); <span class="comment">% that's the vector where we will store the predicted output</span>
+<span class="keyword">for</span> i=2:NN
+    <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="comment">%%%%%% Write your code here: %%%%%%%%%%%%</span>
+    <span class="comment">% use the variables yn , un , ahat and bhat.</span>
+    ypred(i) = ahat*yn(i-1) + bhat*un(i);
+<span class="keyword">end</span>
+
+<span class="comment">% Once we have the predicted output we can compute the error with the true</span>
+<span class="comment">% data</span>
+predERROR = yn-ypred;
+predRMSE  = rms(predERROR)
+
+<span class="comment">% plot DATA vs MODEL prediction</span>
+figure(2)
+subplot(2,1,1)
+plot(yn)
+hold <span class="string">on</span>
+plot(ypred)
+legend(<span class="string">'DATA'</span>,<span class="string">'Model prediction'</span>)
+title(<span class="string">'Output'</span>)
+xlabel(<span class="string">'Samples'</span>)
+ylabel(<span class="string">'output'</span>)
+subplot(2,1,2)
+plot(predERROR)
+legend(<span class="string">'Prediction error'</span>)
+xlabel(<span class="string">'Samples'</span>)
+ylabel(<span class="string">'error'</span>)
+</pre><pre class="codeoutput">
+predRMSE =
+
+    0.1062
+
+</pre><img vspace="5" hspace="5" src="pss8_part3_prediction_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc;clear;
+close all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Prediction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% load the data samples and identified parameters:
+load pss8_data_part2.mat
+
+% Let's now use the model we found to predict the output!
+% Using validation data (or estimation data, just for a check)
+
+N = length(y);
+NN = N/2;
+% lets redifine the data variables so it will be easy to switch from
+% validation to estimation sets.
+yn = yval;
+un = uval;
+% yn = yest; 
+% un = uest;
+
+% Lets do prediction first, Write your code for 1-step-ahead predictor
+ypred = zeros(NN,1); % that's the vector where we will store the predicted output
+for i=2:NN
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%% Write your code here: %%%%%%%%%%%%
+    % use the variables yn , un , ahat and bhat.
+    ypred(i) = ahat*yn(i-1) + bhat*un(i);
+end
+
+% Once we have the predicted output we can compute the error with the true
+% data
+predERROR = yn-ypred;
+predRMSE  = rms(predERROR)
+
+% plot DATA vs MODEL prediction
+figure(2)
+subplot(2,1,1)
+plot(yn)
+hold on
+plot(ypred)
+legend('DATA','Model prediction')
+title('Output')
+xlabel('Samples')
+ylabel('output')
+subplot(2,1,2)
+plot(predERROR)
+legend('Prediction error')
+xlabel('Samples')
+ylabel('error')
+
+##### SOURCE END #####
+--></body></html>
