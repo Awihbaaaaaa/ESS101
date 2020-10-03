@@ -11,9 +11,12 @@ p2 = [p1(1)+l*cos(theta)*sin(phi)
     p1(2)+l*sin(theta)*sin(phi)
     p1(3)-l*cos(phi)];
 
-dp1 = sym('dp1_',[3,1],'real');% [dp1;dp2;dp3]
-dq = [dp1; dtheta; dphi];
+
 q = [p1;theta;phi];
+
+dp1 = sym('dp1_',[3,1],'real');% [dp1;dp2;dp3]
+
+dq = [dp1; dtheta; dphi];
 
 dp2dq = jacobian(p2,q)*dq;
 
@@ -42,10 +45,15 @@ dLq = jacobian(L,q).';
 % The external force applid on the helicopter 5x1
 u = [u1;u2;u3;0;0];
 
-
 % Euler - Lagrange model
-M_v = simplify(u + dLq -ddLdq)
-M_v_latex = latex(M_v)
+b = simplify(u + dLq -ddLdq) % M*dv = b
+% M = simplify(b*pinv(dq)) % M = b*dv^-1
+
+W1 = m1*jacobian(p1,q)'*jacobian(p1,q);
+W2 = m2*jacobian(p2,q)'*jacobian(p2,q);
+M = W1 + W2 % W = M
+
+M_v_latex = latex(b);
 
 %% Task 1.b
 clc
@@ -121,8 +129,12 @@ ddLdq = jacobian(dLdq,q)'*dq;
 dLq = jacobian(L,q).';
 
 % Mv2 
-Mv2 = simplify(u+dLq - ddLdq)
+b = simplify(u+dLq - ddLdq)
 
+W1 = m1*jacobian(p1,q)' * jacobian(p1,q);
+W2 = m2*jacobian(p2,q)' * jacobian(p2,q);
+
+M2 = W1 + W2 
 % c(q,l)=dcdql
 %Mv2_latex = latex(Mv2)
 
