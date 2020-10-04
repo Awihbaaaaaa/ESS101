@@ -19,7 +19,7 @@ yval = y(N/2+1:end);
 
 % ARX 1
 % y(t) = -a1 y(t-1) -a2 y(t-2) + b0 u(t) + e(t)
-PHI = zeros(3,N/2); % The matrix has 2 rows (2 parameters), N/2 columns (time instants)
+PHI = zeros(3,N/2); % The matrix has 3 rows (3 parameters), N/2 columns (time instants)
 PHI(:,1) = [ uest(1);0;0];
 PHI(:,2) = [ uest(2);yest(1);0];
 
@@ -43,9 +43,6 @@ ypred1 = zeros(N/2,1); % that's the vector where we will store the predicted out
 ysim1 = zeros(N/2,1); % that's the vector where we will store the simulated output
 %ypred1(1) = [uest(1) 0 0]*th
 for i=3:N/2
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%% Write your code here: %%%%%%%%%%%%
-    % use the variables yn , un , ahat and bhat.
     ypred1(i) = a1hat*yval(i-1) +a2hat*yval(i-2) + b1hat*uval(i);
     ysim1(i) = a1hat*ysim1(i-1) + a2hat*ysim1(i-2) + b1hat*uval(i);
 end
@@ -59,7 +56,7 @@ simRMSE1  = rms(simERROR1)
 %% 
 clc
 % y(t) = -a1 y(t-1) -a2 y(t-2) + b0 u(t) + b1 u(t-1) + e(t)
-PHI = zeros(4,N/2); % The matrix has 3 rows (3 parameters), N/2 columns (time instants)
+PHI = zeros(4,N/2); % The matrix has 4 rows (4 parameters), N/2 columns (time instants)
 PHI(:,1) = [ uest(1);0;0;0];
 PHI(:,2) = [ uest(2);uest(1);yest(1);0];
 
@@ -89,9 +86,6 @@ ypred2 = zeros(N/2,1); % that's the vector where we will store the predicted out
 ysim2 = zeros(N/2,1); % that's the vector where we will store the simulated output
 
 for i=3:N/2
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%% Write your code here: %%%%%%%%%%%%
-    % use the variables yn , un , ahat and bhat.
     ypred2(i) = a1hat*yval(i-1) +a2hat*yval(i-2) + b0hat*uval(i) + b1hat*uval(i-1);
     ysim2(i) =  a1hat*ysim2(i-1) +a2hat*ysim2(i-2) + b0hat*uval(i) + b1hat*uval(i-1);
 end
