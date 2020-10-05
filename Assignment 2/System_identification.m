@@ -54,7 +54,7 @@ predRMSE1  = rms(predERROR1)
 simERROR1 = yval-ysim1;
 simRMSE1  = rms(simERROR1)
 %% 
-clc
+%       clc
 % y(t) = -a1 y(t-1) -a2 y(t-2) + b0 u(t) + b1 u(t-1) + e(t)
 PHI = zeros(4,N/2); % The matrix has 4 rows (4 parameters), N/2 columns (time instants)
 PHI(:,1) = [ uest(1);0;0;0];
@@ -96,7 +96,7 @@ simERROR2 = yval - ysim2;
 simRMS2 = rms(simERROR2)
 
 %% 
-clc
+%clc
 close all
 % y(t) = -a1 y(t-1) -a2 y(t-2) -a3 y(t-3)+ b1 u(t-1) + e(t)
 PHI = zeros(4,N/2); % The matrix has 4 rows (4 parameters), N/2 columns (time instants)
